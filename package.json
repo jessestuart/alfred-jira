@@ -28,5 +28,8 @@
   "repository": {
     "type": "git",
     "url": "steyep/alfred-jira"
+  },
+  "devDependencies": {
+    "prettier": "^1.6.1"
   }
 }
