@@ -34,13 +34,12 @@ const shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory
 
 if (shouldQuit) {
   app.quit();
-  return;
 }
 
 // Prevent launching the app from CLI when not logged-in. 
 if (!jira.checkConfig() && !loginOnly) {
   console.log('You need to authenticate through the workflow');
-  return app.quit();
+  app.quit();
 }
 
 app.on('ready', function(){
@@ -61,7 +60,7 @@ app.on('ready', function(){
     sh.exec('open ' + requestedURL, err => {
       if (err) throw err;
     });
-  })
+  });
 
   win.once('ready-to-show', () => {
     if (update) {
@@ -89,7 +88,7 @@ app.on('ready', function(){
     // Clean up after ourselves. 
     sh.execSync(`find ${tmp.dir} -maxdepth 1 -type f -name '${tmp.prefix}*png' -delete`);
   });
-})
+});
 
 app.setName(appName);
 app.dock.setIcon(icon);
@@ -111,7 +110,7 @@ ipcMain.on('get-option', (event, option) => {
       method().then(data => {
         if (data)
           event.sender.send('set-option', option, data);
-      }).catch(console.error)
+      }).catch(console.error);
     }
   }
 });
@@ -153,7 +152,7 @@ ipcMain.on('logout', event => {
       event.sender.send('close-client', 1);
     }
   });
-})
+});
 
 ipcMain.on('clearCache', event => {
   jira.clearCache().then(res => {
@@ -162,9 +161,9 @@ ipcMain.on('clearCache', event => {
       message: 'Cache cleared!',
       title: app.getName(),
       icon: icon
-    })
-  })
-})
+    });
+  });
+});
 
 ipcMain.on('download-imgs', (event, type) => {
   Extras(type, () => {
@@ -189,9 +188,9 @@ ipcMain.on('get-bookmark-icon', (event, index) => {
       err => {
         if (err) throw err;
         event.sender.send('set-bookmark-icon', tmpFile);
-      })
+      });
     }
-  })
+  });
 });
 
 ipcMain.on('test-bookmark', (event, bookmark) => {
