@@ -12,7 +12,7 @@ Object.prototype.Get = function(key) {
             .reduce(function (s,p) { 
               return typeof s == 'undefined' || typeof s === null ? s : s[p];
             }, this);
-}
+};
 
 require('angular');
 
@@ -22,7 +22,7 @@ const getData = () => {
     data = JSON.parse(fs.readFileSync(cfgFile, 'utf-8'));
   }
   return data;
-}
+};
 
 const ValidateOptions = (obj) => {
   ['available_projects', 'enabled_menu_items', 'available_issues_statuses'].forEach(key => {
@@ -31,8 +31,8 @@ const ValidateOptions = (obj) => {
       return;
     }
     ipcRenderer.send('get-option', key);
-  })
-}
+  });
+};
 
 const loginOnly = remote.getGlobal('login-only');
 const appName = remote.getGlobal('app-name');
@@ -97,7 +97,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       }
       $scope.showLogin = false;
     }
-  }
+  };
 
   $scope.cancelLogin = () => {
     if (loginOnly) ipcRenderer.send('close');
@@ -106,7 +106,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
     $scope.loginData.url = data.url;
     delete $scope.loginData.password;
     $scope.showLogin = false;
-  }
+  };
 
   $scope.save = () => {
     $scope.data.url = $scope.data.url.replace(/(.)\/*$/, '$1/');
@@ -151,21 +151,21 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
         document.body.getElementsByClassName('save')[0].lastChild.textContent = text;
       }, 1000);
     });
-  }
+  };
 
   $scope.clearCache = () => ipcRenderer.send('clearCache');
 
   $scope.logout = function() {
     ipcRenderer.send('logout');
     window.onbeforeunload = undefined;
-  }
+  };
 
   $scope.inProgress = {};
   
   $scope.download = type => {
     ipcRenderer.send('download-imgs', type);
     $timeout(() => $scope.inProgress[type] = true, 0);
-  }
+  };
 
   $scope.sortFields = pos => {
     return [
@@ -181,7 +181,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       'Updated'
     ].filter(ele => {
       return ele == pos || !$scope.selectedBookmark.sort.map(s => s.name).includes(ele);
-    })
+    });
   };
 
   const getTime = mil => {
@@ -196,7 +196,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       }
       return time ? time + ' ' + ['days','hours','minutes','seconds'][index] : 0;
     }).filter(Boolean).join(' ');
-  }
+  };
 
   if (!$scope.data.bookmarks) {
     $scope.data.bookmarks = config.bookmarks;
@@ -221,24 +221,24 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       index = $scope.data.bookmarks.length;
     }
     ipcRenderer.send('get-bookmark-icon', index);
-  }
+  };
   
   $scope.bookmarkIcon = fileName => {
     if (fileName && fs.existsSync(fileName)) {
       return fileName;
     }
     return '../resources/icons/bookmark.png';
-  }
+  };
 
   $scope.editBookmark = (bookmark, index) => {
     $scope.bookmarkInEdit = true;
     $scope.selectedBookmarkIndex = index;
     $scope.selectedBookmark = new Bookmark(bookmark);
-    $scope.selectedIcon = $scope.selectedBookmark.icon
+    $scope.selectedIcon = $scope.selectedBookmark.icon;
     $scope.cacheConversion = getTime($scope.selectedBookmark.cache);
     $location.hash('bookmark-form');
     $anchorScroll();
-  }
+  };
 
   $scope.addBookmark = bookmark => {
     if ($scope.selectedIcon != bookmark.icon) {
@@ -253,14 +253,14 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
     delete $scope.selectedIcon;
     $scope.selectedBookmark = new Bookmark();
     $scope.bookmarkInEdit = false;
-  }
+  };
 
   $scope.copyBookmark = bookmark => {
     let copy = new Bookmark(bookmark);
     copy.name = `Copy of ${copy.name}`;
     $scope.selectedIcon = bookmark.icon;
     $scope.addBookmark(copy);
-  }
+  };
 
   $scope.deleteBookmark = index => $scope.data.bookmarks.splice(index,1);
 
@@ -268,7 +268,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
     $scope.inProgress.testConfig = true;
     $scope.testSuccessful = false;
     ipcRenderer.send('test-bookmark', bookmark);
-  }
+  };
 
   $scope.selectedBookmark = $scope.selectedBookmark || new Bookmark();
 
@@ -281,7 +281,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       opt.enabled = enabled;
       return opt;
     });
-  }
+  };
 
   $scope.checkDaemonStatus = () => {
     $scope.inProgress.daemon = 0;
@@ -293,7 +293,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       $timeout(() => $scope.daemonStatus = 0, 3000);
     }
     $scope.inProgress.daemon = false;
-  }
+  };
   $scope.daemonRunning = data.Get('options.backgroundCache') === true;
 
   $scope.logFile = config.plistFileLog;
@@ -317,7 +317,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
 
   $scope.$watch("selectedBookmark.query", val => { 
       $scope.testSuccessful = false;
-      $scope.selectedBookmark.hideSort = /order.+by/i.test(val)
+      $scope.selectedBookmark.hideSort = /order.+by/i.test(val);
   });
 
   // Prompt user to save before closing.
@@ -329,7 +329,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
     } else {
       return undefined;
     }
-  }
+  };
 
   ipcRenderer.on('set-option', (channel, key, data) => {
     data = data.map(opt => {
@@ -337,7 +337,7 @@ app.controller('ctrl', ['$scope', '$timeout', '$element', '$location', '$anchorS
       return opt;
     });
     $timeout(() => $scope.options[key] = data, 0);
-  })
+  });
 
   ipcRenderer.on('close-client', (channel, res) => {
     // user canceled the close.
