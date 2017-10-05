@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "sh ./bin/install.sh",
-    "electron": "./node_modules/.bin/electron ."
+    "electron": "./node_modules/.bin/electron .",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Stephen Pennell <pennell.stephen@gmail.com> (https://github.com/steyep)",
   "license": "ISC",
@@ -23,10 +25,12 @@
     "font-awesome": "^4.7.0",
     "moment": "^2.18.1",
     "node-persist": "^2.1.0",
-    "xmlbuilder": "^9.0.4"
+    "xmlbuilder": "^9.0.4",
+    "snyk": "^1.42.3"
   },
   "repository": {
     "type": "git",
     "url": "steyep/alfred-jira"
-  }
+  },
+  "snyk": true
 }
